@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RollForward>Major</RollForward>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Kraken.ico</ApplicationIcon>
+    <AssemblyName>KrakenXboxUnlocker</AssemblyName>
+    <Product>KrakenXboxUnlocker</Product>
+    <AssemblyTitle>KrakenXboxUnlocker</AssemblyTitle>
+    <AssemblyCompany>Bry</AssemblyCompany>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>1.0</Version>
+    <Copyright>Bry</Copyright>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Kraken.ico" />
+    <Resource Include="Kraken.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2535.41" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.3.24172.9" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Obfuscar" Version="2.2.50">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Management" Version="9.0.0-preview.3.24172.9" />
+    <PackageReference Include="VirtualizingWrapPanel" Version="2.5.1" />
+    <PackageReference Include="WPF-UI" Version="3.0.0-preview.4" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <None Remove="Assets\brand.png" />
+    <None Remove="Assets\G.png" />
+    <None Remove="Assets\retro360.ico" />
+    <None Remove="Assets\xbox.ico" />
+    <None Remove="Fonts\lastninja.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\brand.png" />
+    <Resource Include="Assets\G.png" />
+    <Resource Include="Assets\retro360.ico" />
+    <Resource Include="Assets\xbox.ico" />
+    <Resource Include="Fonts\lastninja.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="xbdm\xbdm.dll" />
+    <EmbeddedResource Include="xbdm\msvcp71.dll" />
+    <EmbeddedResource Include="xbdm\msvcr71.dll" />
+  </ItemGroup>
+
+  <Target Name="ObfuscateAfterBuild" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+    <Exec Command="&quot;$(Obfuscar)&quot; &quot;$(MSBuildProjectDirectory)\obfuscar.xml&quot;" />
+    <!-- Overwrite the original assemblies so publish single file bundles the obfuscated ones -->
+    <Copy SourceFiles="$(TargetDir)Obfuscated\$(TargetFileName)" DestinationFiles="$(TargetPath)" />
+    <Copy SourceFiles="$(TargetDir)Obfuscated\$(TargetFileName)" DestinationFiles="$(ProjectDir)obj\$(Configuration)\$(TargetFramework)\$(RuntimeIdentifier)\$(TargetFileName)" Condition="'$(RuntimeIdentifier)' != ''" />
+    <Copy SourceFiles="$(TargetDir)Obfuscated\$(TargetFileName)" DestinationFiles="$(ProjectDir)obj\$(Configuration)\$(TargetFramework)\$(TargetFileName)" Condition="'$(RuntimeIdentifier)' == ''" />
+  </Target>
+
+</Project>

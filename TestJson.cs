@@ -1,0 +1,1 @@
+using System; using System.Collections.Generic; using System.Text.Json; class Program { static void Main() { var pop = new Dictionary<string, object> { { " kty\, \EC\ } }; var body = new Dictionary<string, object> { { \Properties\, new Dictionary<string, object> { { \ProofKey\, pop } } }, { \TokenType\, \JWT\ } }; Console.WriteLine(JsonSerializer.Serialize(body)); } }

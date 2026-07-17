@@ -1,0 +1,90 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release tag to build (e.g. v3)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Create Secrets.cs
+      shell: bash
+      run: |
+        cat > KrakenUnlocker/Secrets.cs << 'EOF'
+        namespace KrakenUnlocker;
+
+        public static class Secrets
+        {
+            public static string SupabaseUrl => "https://kqpiwdxzzfvtlofkptev.supabase.co";
+            public static string SupabaseAnonKey => "${{ secrets.SUPABASE_ANON_KEY }}";
+        }
+        EOF
+
+    - name: Resolve version
+      id: ver
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "tag=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Write commit message to release notes file
+      shell: bash
+      run: git log -1 --pretty=%B > release-body.txt
+
+    - name: Stamp version into source
+      run: |
+        $tag = "${{ steps.ver.outputs.tag }}"
+        $homePath = "${{github.workspace}}/KrakenUnlocker/ViewModels/Pages/HomeViewModel.cs"
+        $content = Get-Content -Path $homePath -Raw
+        $content = $content -replace 'public static string ToolVersion = "EmptyDevToolVersion";', "public static string ToolVersion = `"$tag`";"
+        Set-Content -Path $homePath -Value $content
+
+    - name: Skip Obfuscar (package not available in NuGet)
+      # Obfuscar.console is not available in NuGet feeds currently
+      # Building without obfuscation for now
+
+    - name: Restore dependencies
+      run: dotnet restore KrakenUnlocker/KrakenUnlocker.csproj /p:EnableWindowsTargeting=true
+
+    - name: Build
+      # Use --self-contained true so the publish output contains the BCL.
+      # This matches build_release.ps1 (also --self-contained true) and means
+      # Obfuscar can resolve every type from InPath="." with no absolute
+      # pack paths that would otherwise drift with every SDK patch upgrade.
+      # Trade-off: ~80MB → ~150MB exe; acceptable for a single-file download.
+      run: dotnet publish KrakenUnlocker/KrakenUnlocker.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:IncludeAllContentForSelfExtract=true /p:EnableWindowsTargeting=true /p:DebugType=none /p:DebugSymbols=false -o ./publish
+
+    - name: Copy .exe file to workspace
+      run: |
+        Remove-Item -Path "${{github.workspace}}/KrakenXboxUnlocker.exe" -ErrorAction Ignore
+        Copy-Item -Path "./publish/KrakenXboxUnlocker.exe" -Destination "${{github.workspace}}/KrakenXboxUnlocker.exe"
+
+    - name: Create GitHub release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create "${{ steps.ver.outputs.tag }}" "${{github.workspace}}/KrakenXboxUnlocker.exe" `
+          --title "${{ steps.ver.outputs.tag }}" `
+          --notes-file release-body.txt `
+          --repo ${{ github.repository }}

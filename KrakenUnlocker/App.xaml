@@ -1,0 +1,22 @@
+<Application x:Class="KrakenUnlocker.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             Exit="OnExit"
+             Startup="OnStartup">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- WPF-UI base first so controls work -->
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+                <!-- Our theme overrides AFTER so they beat WPF-UI -->
+                <ResourceDictionary Source="Theme/EvilNeonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/ThemeConstants.xaml"/>
+                <ResourceDictionary Source="Theme/KrakenStyles.xaml"/>
+                <ResourceDictionary Source="Theme/AccentOverride.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

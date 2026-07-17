@@ -1,0 +1,388 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- CYBERPUNK UI STYLES -->
+
+    <!-- Glitch Text Style -->
+    <Style x:Key="GlitchText" TargetType="TextBlock">
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="0" Y="0"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="10" ShadowDepth="0" Opacity="0.8"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior="Forever">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" 
+                                                       BeginTime="0:0:8">
+                            <DiscreteDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                            <DiscreteDoubleKeyFrame Value="2" KeyTime="0:0:0.05"/>
+                            <DiscreteDoubleKeyFrame Value="-1" KeyTime="0:0:0.1"/>
+                            <DiscreteDoubleKeyFrame Value="0" KeyTime="0:0:0.15"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Cyberpunk Card Style -->
+    <Style x:Key="CyberpunkCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource DeepGreyBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Cyber Border Style -->
+    <Style x:Key="CyberBorder" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CyberBlackBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="10" ShadowDepth="0" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Cyberpunk Button Style -->
+    <Style x:Key="CyberpunkButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource EvilButtonGradient}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrightRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Padding" Value="15,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="15" ShadowDepth="0" Opacity="0.8"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                           BorderBrush="{TemplateBinding BorderBrush}"
+                           BorderThickness="{TemplateBinding BorderThickness}"
+                           CornerRadius="3">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                           To="1.05" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                           To="1.05" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                           To="25" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                           To="1" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                           To="1" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                           To="15" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Cyberpunk TextBox Style -->
+    <Style x:Key="CyberpunkTextBox" TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource CyberBlackBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource BrightRedBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="CaretBrush" Value="{StaticResource BrightRedBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="10" ShadowDepth="0" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Cyberpunk ProgressBar Style -->
+    <Style x:Key="CyberpunkProgressBar" TargetType="ProgressBar">
+        <Setter Property="Background" Value="{StaticResource CyberBlackBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource EvilRedGlowGradient}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Border Background="{TemplateBinding Background}"
+                           BorderBrush="{TemplateBinding BorderBrush}"
+                           BorderThickness="{TemplateBinding BorderThickness}"
+                           CornerRadius="5">
+                        <Grid>
+                            <Rectangle x:Name="PART_Track"/>
+                            <Rectangle x:Name="PART_Indicator" 
+                                     Fill="{TemplateBinding Foreground}"
+                                     HorizontalAlignment="Left">
+                                <Rectangle.Effect>
+                                    <DropShadowEffect Color="#FF0000" BlurRadius="15" ShadowDepth="0" Opacity="1"/>
+                                </Rectangle.Effect>
+                            </Rectangle>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Loading Ring Style -->
+    <Style x:Key="LoadingRing" TargetType="Ellipse">
+        <Setter Property="Stroke" Value="{StaticResource EvilRedGlowGradient}"/>
+        <Setter Property="StrokeThickness" Value="6"/>
+        <Setter Property="StrokeDashArray" Value="10 5"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <RotateTransform Angle="0"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="20" ShadowDepth="0" Opacity="1"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior="Forever">
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                       From="0" To="360" Duration="0:0:1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Hexagonal Panel Template -->
+    <ControlTemplate x:Key="HexagonPanel" TargetType="ContentControl">
+        <Grid>
+            <Polygon Points="50,10 90,30 90,70 50,90 10,70 10,30"
+                    Fill="{StaticResource EvilButtonGradient}"
+                    Stroke="{StaticResource BrightRedBrush}"
+                    StrokeThickness="2">
+                <Polygon.Effect>
+                    <DropShadowEffect Color="#FF0000" BlurRadius="15" ShadowDepth="0" Opacity="0.8"/>
+                </Polygon.Effect>
+            </Polygon>
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </ControlTemplate>
+
+    <!-- Cyberpunk ListBox Style -->
+    <Style x:Key="CyberpunkListBox" TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource DeepGreyBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <!-- Cyberpunk ListBoxItem Style -->
+    <Style x:Key="CyberpunkListBoxItem" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border Background="{TemplateBinding Background}"
+                           BorderBrush="{StaticResource EvilRedBrush}"
+                           BorderThickness="1"
+                           CornerRadius="3"
+                           Padding="{TemplateBinding Padding}">
+                        <ContentPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource EvilRed}"/>
+                <Setter Property="Cursor" Value="Hand"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource BrightRed}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Cyberpunk ScrollBar Style -->
+    <Style x:Key="CyberpunkScrollBar" TargetType="ScrollBar">
+        <Setter Property="Background" Value="{StaticResource CyberBlackBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="Width" Value="12"/>
+    </Style>
+
+    <!-- Neon Label Style -->
+    <Style x:Key="NeonLabel" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource BrightRedBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="15" ShadowDepth="0" Opacity="1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Terminal Style TextBlock -->
+    <Style x:Key="TerminalText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#00FF00"/>
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- Cyberpunk CheckBox Style -->
+    <Style x:Key="CyberpunkCheckBox" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Horizontal">
+                        <Border x:Name="CheckBoxBorder" 
+                               Width="20" Height="20" 
+                               Background="{StaticResource CyberBlackBrush}"
+                               BorderBrush="{StaticResource EvilRedBrush}"
+                               BorderThickness="2"
+                               CornerRadius="3">
+                            <Path x:Name="CheckMark" 
+                                 Data="M 2,6 L 7,11 L 16,2" 
+                                 Stroke="{StaticResource BrightRedBrush}"
+                                 StrokeThickness="3"
+                                 Visibility="Collapsed"/>
+                        </Border>
+                        <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="CheckBoxBorder" Property="Background" Value="{StaticResource EvilRed}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="{StaticResource BrightRed}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Cyberpunk ComboBox Style -->
+    <Style x:Key="CyberpunkComboBox" TargetType="ComboBox">
+        <Setter Property="Background" Value="{StaticResource CyberBlackBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="Padding" Value="8"/>
+    </Style>
+
+    <!-- Data Grid Header Style -->
+    <Style x:Key="CyberpunkDataGridHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource EvilButtonGradient}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrightRedBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,1,2"/>
+    </Style>
+
+    <!-- Achievement Card Style -->
+    <Style x:Key="AchievementCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource MetalGreyBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EvilRedBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#FF0000" BlurRadius="15" ShadowDepth="0" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                           To="25" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                           To="15" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Transform definitions for animations -->
+    <TranslateTransform x:Key="TranslateTransform" X="0" Y="0"/>
+    <ScaleTransform x:Key="ScaleTransform" ScaleX="1" ScaleY="1"/>
+    <RotateTransform x:Key="RotateTransform" Angle="0"/>
+
+</ResourceDictionary>

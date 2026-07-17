@@ -1,0 +1,411 @@
+<Page x:Class="KrakenUnlocker.Views.Pages.AchievementsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:p="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:KrakenUnlocker.Views.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="AchievementsPage"
+      x:Name="AchievementsPagen"
+      d:DataContext="{d:DesignInstance local:AchievementsPage,
+                                 IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+
+
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:ProgressWidthConverter x:Key="ProgressWidthConverter"/>
+    </Page.Resources>
+
+    <Grid Margin="28,16,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Modern Controls Card -->
+        <Border Grid.Row="0" Style="{StaticResource KrakenCardBorder}" Margin="0,0,0,20" Padding="24,20"
+                ClipToBounds="False" Panel.ZIndex="0" BorderBrush="#551111">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#220505" Offset="0"/>
+                    <GradientStop Color="#1A0000" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Title ID Override -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,16">
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="TITLE ID" Margin="0,0,0,8"/>
+                    <Grid>
+                        <ui:TextBox x:Name="TitleIDBox"
+                                    IsEnabled="{Binding ViewModel.TitleIDEnabled}"
+                                    Padding="12,10"
+                                    Margin="0,0,50,0"
+                                    Text="{Binding ViewModel.TitleIDOverride, Mode=TwoWay}"/>
+                        <ui:Button x:Name="TitleIDRefreshButton"
+                                   IsEnabled="{Binding ViewModel.TitleIDEnabled}"
+                                   HorizontalAlignment="Right"
+                                   Width="44" Height="44"
+                                   ToolTip="Reload"
+                                   Command="{Binding ViewModel.RefreshAchievementsCommand}"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Search -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="12,0,12,16">
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="SEARCH" Margin="0,0,0,8"/>
+                    <Grid>
+                        <ui:TextBox x:Name="SearchBox"
+                                    IsEnabled="{Binding ViewModel.TitleIDEnabled}"
+                                    Padding="12,10"
+                                    Margin="0,0,50,0"
+                                    Text="{Binding ViewModel.SearchText, Mode=TwoWay, IsAsync=true}"
+                                    KeyDown="SearchBox_OnKeyDownAsync"/>
+                        <ui:Button x:Name="SearchButton"
+                                   IsEnabled="{Binding ViewModel.TitleIDEnabled}"
+                                   HorizontalAlignment="Right"
+                                   Width="44" Height="44"
+                                   ToolTip="Search"
+                                   Command="{Binding ViewModel.SearchAndFilterAchievementsCommand}"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Game Info -->
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="12,0,12,16" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" 
+                               Text="{Binding ViewModel.GameInfo}" 
+                               Margin="0,0,0,4"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding ViewModel.GameName}"
+                               FontSize="14" FontWeight="Bold"
+                               Foreground="White"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxWidth="280"/>
+                </StackPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Row="0" Grid.Column="3" Margin="12,0,0,16" VerticalAlignment="Top">
+                    <ui:Button x:Name="UnlockAllButton"
+                               IsEnabled="{Binding ViewModel.IsUnlockAllEnabled}"
+                               Style="{StaticResource KrakenPrimaryButton}"
+                               Content="🔓 Unlock All"
+                               Command="{Binding ViewModel.UnlockAllCommand}"
+                               MinWidth="140"/>
+                    <ui:Button x:Name="RefreshButton"
+                               Margin="0,8,0,0"
+                               Appearance="Secondary"
+                               Content="Refresh"
+                               Command="{Binding ViewModel.RefreshAchievementsCommand}"
+                               MinWidth="140"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- EVENT Based Badge -->
+        <Border Grid.Row="1"
+                Margin="0,0,0,12"
+                CornerRadius="8"
+                BorderBrush="#440B0B"
+                BorderThickness="1"
+                Background="#1A0505"
+                Padding="16,12"
+                Visibility="{Binding ViewModel.IsEventBased, Converter={StaticResource BoolToVis}}">
+            <Border.Effect>
+                <DropShadowEffect Color="#FF0033" BlurRadius="15" ShadowDepth="0" Opacity="0.25"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="Star24" FontSize="20" Foreground="#CC0000" Margin="0,0,12,0"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="EVENT BASED" FontSize="11" FontWeight="Bold"
+                               Foreground="#FF0033" Margin="0,0,0,2"/>
+                    <TextBlock Text="This game uses event-based achievements"
+                               FontSize="10" Foreground="#AAA"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2"
+                Margin="0,0,0,16"
+                CornerRadius="8"
+                BorderBrush="#440B0B"
+                BorderThickness="1"
+                Background="#1A0505"
+                Padding="16,12"
+                Visibility="{Binding ViewModel.IsAutoUnlockerEnabled, Converter={StaticResource BoolToVis}}">
+            <Border.Effect>
+                <DropShadowEffect Color="#FF0033" BlurRadius="15" ShadowDepth="0" Opacity="0.15"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: icon + label - simplified -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <ui:SymbolIcon Symbol="Rocket24" FontSize="20" Foreground="#FF0033" Margin="0,0,12,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="AUTO UNLOCKER" FontSize="11" FontWeight="Bold"
+                                   Foreground="#FF3366" Margin="0,0,0,2"/>
+                        <TextBlock Text="Natural-timeline unlocking"
+                                   FontSize="10" Foreground="#AAA"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Center: buttons -->
+                <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                    <ui:Button Margin="0,0,6,0" MinWidth="100"
+                               Appearance="Primary"
+                               Content="{Binding ViewModel.AutoStartPauseLabel}"
+                               Command="{Binding ViewModel.ToggleAutoUnlockerCommand}"/>
+                    <ui:Button Margin="0,0,6,0" Appearance="Danger" Content="Stop"
+                               Visibility="{Binding ViewModel.AutoRunning, Converter={StaticResource BoolToVis}}"
+                               Command="{Binding ViewModel.StopAutoUnlockerCommand}"/>
+                    <ui:Button Margin="0,0,6,0" Appearance="Secondary"
+                               Content="Get Order"
+                               IsEnabled="{Binding ViewModel.AutoControlsEnabled}"
+                               Command="{Binding ViewModel.GetUnlockOrderCommand}"/>
+                    <ui:Button Margin="0,0,6,0" Appearance="Secondary"
+                               Content="Queue"
+                               IsEnabled="{Binding ViewModel.AutoControlsEnabled}"
+                               Command="{Binding ViewModel.AddToQueueCommand}"/>
+                    <ui:Button Margin="0,0,6,0" Appearance="Secondary"
+                               Content="Skip List"
+                               IsEnabled="{Binding ViewModel.AutoControlsEnabled}"
+                               Command="{Binding ViewModel.EditSkipListCommand}"/>
+                    <ui:Button Margin="0,0,0,0" Appearance="Secondary"
+                               Content="Delays"
+                               IsEnabled="{Binding ViewModel.AutoControlsEnabled}"
+                               Command="{Binding ViewModel.EditDelaysCommand}"/>
+                </WrapPanel>
+
+                <!-- Right: status + progress ring + badge -->
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="16,0,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <ui:ProgressRing Width="16" Height="16" Margin="0,0,8,0"
+                                         IsIndeterminate="True" VerticalAlignment="Center"
+                                         Visibility="{Binding ViewModel.AutoRunning, Converter={StaticResource BoolToVis}}"/>
+                        <Border CornerRadius="6" Padding="12,4" Background="#1A0505"
+                                BorderBrush="#CC0000" BorderThickness="1">
+                            <TextBlock Text="{Binding ViewModel.AutoStatusText}"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="#FF0033"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Now unlocking (only when running) -->
+                    <StackPanel Margin="0,4,0,0"
+                                Visibility="{Binding ViewModel.AutoRunning, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="{Binding ViewModel.AutoCurrentAchievement}"
+                                   FontSize="11" Foreground="#CCC"
+                                   TextTrimming="CharacterEllipsis" MaxWidth="220"
+                                   HorizontalAlignment="Right"/>
+                        
+                        <!-- Simplified timer design -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,2,0,0">
+                            <TextBlock Text="⏱ " FontSize="11" Foreground="#FF3366"/>
+                            <TextBlock Text="{Binding ViewModel.AutoCountdownText}"
+                                       FontSize="12" FontWeight="Bold" Foreground="#FF0033"/>
+                        </StackPanel>
+                        
+                        <TextBlock Text="{Binding ViewModel.AutoEstimateText}"
+                                   FontSize="10" Foreground="#888"
+                                   HorizontalAlignment="Right" Margin="0,1,0,0"/>
+                    </StackPanel>
+
+                    <!-- Loop count 
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0"
+                                Visibility="Collapsed">
+                        <TextBlock Text="Loop ×" FontSize="11" Foreground="#555" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ui:TextBox Width="46" FontSize="11"
+                                    Text="{Binding ViewModel.AutoLoopCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="Repeat counter-based achievements this many times"/>
+                    </StackPanel>
+                    -->
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <DataGrid Grid.Row="3"
+                  Background="Transparent"
+                  VerticalScrollBarVisibility="Visible"
+                  HorizontalScrollBarVisibility="Visible"
+                  AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  ItemsSource="{Binding ViewModel.DGAchievements}"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="True"
+                  RowBackground="#1A0505"
+                  AlternatingRowBackground="#111111"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  BorderThickness="0"
+                  RowHeight="52"
+                  FontSize="12">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#0A0A0A"/>
+                    <Setter Property="Foreground" Value="#FF0033"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="11"/>
+                    <Setter Property="Padding" Value="12,10"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    <Setter Property="BorderBrush" Value="#1A1A1A"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="12,8"/>
+                    <Setter Property="Foreground" Value="#CCCCCC"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#1A0505"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="0.05*"/>
+                <DataGridTextColumn Header="ACHIEVEMENT" Binding="{Binding Name}" Width="0.2*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="DESCRIPTION" MaxWidth="300" Binding="{Binding Description}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="SECRET" Binding="{Binding IsSecret}" Width="0.1*"/>
+                <DataGridTextColumn Header="DATE UNLOCKED" Binding="{Binding DateUnlocked}" Width="0.27*"/>
+                <DataGridTextColumn Header="GS" Binding="{Binding Gamerscore}" Width="0.06*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="%" Binding="{Binding RarityPercentage}" Width="0.13*"/>
+                <DataGridTextColumn Header="RARITY" Binding="{Binding RarityCategory}" Width="0.11*"/>
+                <DataGridTextColumn Header="STATE" Binding="{Binding ProgressState}" Width="0.12*"/>
+                <DataGridTextColumn Header="TYPE" Binding="{Binding Category}" Width="0.16*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Header="UNLOCK" Width="0.13*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Margin="4" Click="UnlockButton" Tag="{Binding Index, Mode=TwoWay}"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    IsEnabled="{Binding IsUnlockable}"
+                                    Cursor="Hand">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="#CC0000"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Content" Value="🔓"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bg" Background="{TemplateBinding Background}"
+                                                            CornerRadius="4" Padding="6,4">
+                                                        <TextBlock x:Name="icon"
+                                                                   Text="{TemplateBinding Content}"
+                                                                   FontSize="{TemplateBinding FontSize}"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="#FF0033"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter TargetName="bg" Property="Background" Value="#111111"/>
+                                                            <Setter TargetName="bg" Property="BorderBrush" Value="#2A2A2A"/>
+                                                            <Setter TargetName="icon" Property="Foreground" Value="#444444"/>
+                                                            <Setter TargetName="icon" Property="Opacity" Value="0.6"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <!-- Show locked icon when not unlockable -->
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsUnlockable}" Value="False">
+                                                <Setter Property="Content" Value="🔒"/>
+                                                <Setter Property="ToolTip" Value="Already unlocked"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsUnlockable}" Value="True">
+                                                <Setter Property="Content" Value="🔓"/>
+                                                <Setter Property="ToolTip" Value="Click to unlock"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsUnlocking}" Value="True">
+                                                <Setter Property="Content" Value="⏳"/>
+                                                <Setter Property="Background" Value="#FF9900"/>
+                                                <Setter Property="ToolTip" Value="Unlocking..."/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsJustUnlocked}" Value="True">
+                                                <Setter Property="Content" Value="✓"/>
+                                                <Setter Property="Background" Value="#00AA00"/>
+                                                <Setter Property="ToolTip" Value="Unlocked!"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>
+
+
+
+
+
+

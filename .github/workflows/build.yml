@@ -1,0 +1,44 @@
+name: Build KrakenUnlocker
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Force checkout exact commit (avoid stale master ref replication lag)
+        shell: bash
+        run: |
+          git fetch --force origin ${{ github.sha }}
+          git checkout --force ${{ github.sha }}
+          git clean -fdx
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore WPF workload
+        run: dotnet workload restore
+
+      - name: Clean (force fresh compile of current HEAD)
+        run: |
+          dotnet clean KrakenUnlocker/KrakenUnlocker.csproj -c Release
+          Remove-Item -Recurse -Force KrakenUnlocker/bin, KrakenUnlocker/obj -ErrorAction SilentlyContinue
+
+      - name: Publish
+        run: dotnet publish KrakenUnlocker/KrakenUnlocker.csproj -c Release -r win-x64 --no-self-contained -o KrakenUnlocker/publish_test
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish_test
+          path: KrakenUnlocker/publish_test

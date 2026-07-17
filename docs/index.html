@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kraken Xbox Unlocker</title>
+  <meta name="description" content="A premium, lightning-fast Xbox achievement tool for Windows. Effortlessly manage and unlock your achievements."/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #CC0000;
+      --red-bright: #FF1111;
+      --red-dim: #880000;
+      --bg: #0A0A0A;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #1f1f1f;
+      --text: #e8e8e8;
+      --muted: #666;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 60px;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .nav-logo span { color: var(--red); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .nav-download {
+      background: var(--red);
+      color: white !important;
+      padding: 7px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px !important;
+      transition: background .2s !important;
+    }
+
+    .nav-download:hover { background: var(--red-bright) !important; color: white !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(204,0,0,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(204,0,0,0.1);
+      border: 1px solid rgba(204,0,0,0.25);
+      color: #ff6666;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      letter-spacing: .5px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(1.3); }
+    }
+
+    .hero-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 28px;
+      filter: drop-shadow(0 0 32px rgba(204,0,0,0.4));
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 span { color: var(--red); }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      max-width: 480px;
+      margin: 16px auto 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red);
+      color: white;
+      padding: 14px 30px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 0 0 rgba(204,0,0,0);
+    }
+
+    .btn-primary:hover {
+      background: var(--red-bright);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(204,0,0,0.35);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--muted);
+      padding: 14px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: color .2s, border-color .2s;
+    }
+
+    .btn-secondary:hover { color: white; border-color: #444; }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #444;
+    }
+
+    /* ── SECTION ── */
+    section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 15px;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(204,0,0,0.35);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .feature-card.premium {
+      border-color: rgba(204,0,0,0.2);
+      background: linear-gradient(135deg, #111 0%, #160000 100%);
+    }
+
+    .feature-card.premium .premium-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--red);
+      background: rgba(204,0,0,0.1);
+      border: 1px solid rgba(204,0,0,0.2);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--red);
+      background: linear-gradient(160deg, #130000 0%, #0f0f0f 100%);
+      position: relative;
+    }
+
+    .featured-tag {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--red);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 14px;
+      border-radius: 20px;
+      letter-spacing: .5px;
+    }
+
+    .pricing-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .pricing-price {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price span {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .pricing-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex: 1;
+    }
+
+    .pricing-features li {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--red);
+      font-weight: 700;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .pricing-features li.off { color: var(--muted); }
+    .pricing-features li.off::before { content: '—'; color: #333; }
+
+    .btn-pricing {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: .2s;
+    }
+
+    .btn-pricing.free {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .btn-pricing.free:hover { border-color: #444; color: white; }
+
+    .btn-pricing.paid {
+      background: var(--red);
+      color: white;
+      border: none;
+    }
+
+    .btn-pricing.paid:hover { background: var(--red-bright); }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 48px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 19px; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .step {
+      display: flex;
+      gap: 24px;
+      padding: 0 0 40px 0;
+      position: relative;
+    }
+
+    .step:last-child { padding-bottom: 0; }
+
+    .step-num {
+      width: 40px;
+      height: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--red);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .step-body h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      padding-top: 8px;
+    }
+
+    .step-body p { font-size: 13px; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      list-style: none;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .2s;
+    }
+
+    .footer-links a:hover { color: white; }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #333;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">
+      <img src="kraken.png" alt="Kraken"/>
+      Kraken <span>Xbox Unlocker</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="https://discord.gg/JjsbtMJKnu">Discord</a></li>
+      <li><a href="https://github.com/9bry/KrakenUnlocker/releases/latest" class="nav-download">Download</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Achievement Unlocker · Xbox</div>
+    <img class="hero-logo"
+         src="kraken.png"
+         alt="Kraken logo"/>
+    <h1>Kraken <span>Xbox Unlocker</span></h1>
+    <p class="hero-sub">The ultimate Xbox achievement tool built for Windows. Take full control of your gamerscore with safe, seamless automation and instant unlocks.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://github.com/9bry/KrakenUnlocker/releases/latest">
+        ⬇ &nbsp;Download Free
+      </a>
+      <a class="btn-secondary" href="https://discord.gg/JjsbtMJKnu">
+        Join Discord
+      </a>
+    </div>
+    <p class="hero-note">Windows 10/11 · No install required</p>
+    <a href="#features" class="btn-secondary" style="margin-top: 40px; border-radius: 50px; padding: 10px 24px;">See More ↓</a>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-desc">Whether you want to pop a single achievement or clear an entire backlog, Kraken has you covered.</p>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>One-click unlock</h3>
+        <p>Select any achievement and unlock it instantly. Unlock all at once or pick them individually.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">👤</div>
+        <h3>Profile viewer</h3>
+        <p>See your gamerscore, avatar, followers, bio and full achievement progress across every game you've played.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Gamertag search</h3>
+        <p>Look up any player's profile and game library. Export their data to CSV and use it as a reference for unlock order.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🕵️</div>
+        <h3>Presence spoofer</h3>
+        <p>Spoof your Xbox presence by Title ID — show as playing any game you want at any time.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔎</div>
+        <h3>Title ID search</h3>
+        <p>Search the local games database by name or Title ID. Instantly find the identifiers you need.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Stats editor</h3>
+        <p>Load any game's tracked stats, edit values inline and push them directly to Xbox. Per-stat save feedback.</p>
+      </div>
+
+
+
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Safe by design</h3>
+        <p>Human-like timing, skip lists, and configurable delays keep your activity looking natural. Built with safety as a priority.</p>
+      </div>
+
+      <div class="feature-card premium">
+        <div class="premium-tag">Premium</div>
+        <div class="feature-icon">⚡</div>
+        <h3>Auto Unlocker</h3>
+        <p>Automatically unlocks achievements in a natural order with human-like timing. Pause, resume or stop at any point.</p>
+      </div>
+
+      <div class="feature-card premium">
+        <div class="premium-tag">Premium</div>
+        <div class="feature-icon">📋</div>
+        <h3>Game Queue</h3>
+        <p>Line up multiple games and let Kraken work through them all unattended. Cooldown timer between games included.</p>
+      </div>
+
+      <div class="feature-card premium">
+        <div class="premium-tag">Premium</div>
+        <div class="feature-icon">🗂</div>
+        <h3>Unlock Order</h3>
+        <p>Build a smart unlock sequence from a reference gamertag — mirrors how real players completed the same game.</p>
+      </div>
+
+      <div class="feature-card premium">
+        <div class="premium-tag">Premium</div>
+        <div class="feature-icon">⏱</div>
+        <h3>Custom Delays</h3>
+        <p>Set your own delay before each individual achievement unlocks. Full control over pacing per game.</p>
+      </div>
+
+      <div class="feature-card premium">
+        <div class="premium-tag">Premium</div>
+        <div class="feature-icon">🚫</div>
+        <h3>Skip list</h3>
+        <p>Mark achievements you want the Auto Unlocker to skip. Useful for online or DLC achievements you want to earn legit.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Free to use. Premium when you're ready.</h2>
+    <p class="section-desc">Core features are completely free. Premium unlocks the automation tools.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-name">Free</p>
+        <p class="pricing-price">$0</p>
+        <p class="pricing-desc">No account needed. Download and go.</p>
+        <ul class="pricing-features">
+          <li>One-click achievement unlock</li>
+          <li>Full profile & game library</li>
+          <li>Gamertag search & CSV export</li>
+          <li>Presence spoofer (adds real playtime to your stats)</li>
+          <li>Title ID search</li>
+          <li>Stats editor</li>
+          <li class="off">Auto Unlocker</li>
+          <li class="off">Game Queue</li>
+          <li class="off">Unlock Order</li>
+          <li class="off">Custom Delays & Skip List</li>
+        </ul>
+        <a class="btn-pricing free" href="https://github.com/9bry/KrakenUnlocker/releases/latest">Download</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-tag">POPULAR</div>
+        <p class="pricing-name">Premium</p>
+        <p class="pricing-price">View Prices <span>on Ko-fi</span></p>
+        <p class="pricing-desc">After purchase, your Ko-fi email address instantly becomes your License Key.</p>
+        <ul class="pricing-features">
+          <li>Everything in Free</li>
+          <li>Auto Unlocker with timer</li>
+          <li>Game Queue with cooldown timer</li>
+          <li>Unlock Order from reference gamertag (pulls exact delays for perfect unlocks)</li>
+          <li>Custom Delays per achievement</li>
+          <li>Skip List</li>
+          <li>Priority support</li>
+        </ul>
+        <a class="btn-pricing paid" href="https://ko-fi.com/bryyz" target="_blank">Get Premium →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">Up and running in seconds</h2>
+    <p class="section-desc">No setup, no configuration. Sign in with Xbox and you're good.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download Kraken Xbox Unlocker</h3>
+          <p>Grab the EXE from the latest release. No installer, no dependencies.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Sign into Xbox</h3>
+          <p>Make sure the Xbox app is open and signed in on your PC. Kraken hooks in automatically.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Pick a game</h3>
+          <p>Your full game library loads on the home screen. Click any title to see its achievements.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Unlock</h3>
+          <p>Select achievements and hit unlock — or let Auto Unlocker handle the whole game for you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="https://github.com/9bry/KrakenUnlocker/releases/latest">Download</a></li>
+      <li><a href="https://github.com/9bry/KrakenUnlocker">GitHub</a></li>
+      <li><a href="https://discord.gg/JjsbtMJKnu">Discord</a></li>
+      <li><a href="https://ko-fi.com/bryyz">Ko-fi</a></li>
+      <li><a href="https://t.me/br_yy">Telegram</a></li>
+    </ul>
+    <p class="footer-copy">KrakenUnlocker · Not affiliated with Xbox or Microsoft</p>
+  </footer>
+
+</body>
+</html>

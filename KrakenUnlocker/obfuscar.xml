@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Obfuscator>
+  <Var name="InPath" value=".\bin\Release\net8.0-windows10.0.22621.0\win-x64" />
+  <Var name="OutPath" value=".\bin\Release\net8.0-windows10.0.22621.0\win-x64\Obfuscated" />
+  <Var name="KeepPublicApi" value="true" />
+  <Var name="HidePrivateApi" value="true" />
+  <Var name="HideStrings" value="true" />
+  <Var name="UseUnicodeNames" value="true" />
+  <Var name="OptimizeMethods" value="true" />
+  <Var name="SuppressIldasm" value="true" />
+
+  <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.0\ref\net8.0" />
+  <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.0\ref\net8.0" />
+  <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.0\ref\net8.0" />
+  
+  <Module file="$(InPath)\KrakenXboxUnlocker.dll">
+    <!-- Skip views and viewmodels so WPF binding works -->
+    <SkipNamespace name="KrakenUnlocker.Views.Pages" />
+    <SkipNamespace name="KrakenUnlocker.Views.Windows" />
+    <SkipNamespace name="KrakenUnlocker.ViewModels.Pages" />
+    <SkipNamespace name="KrakenUnlocker.ViewModels.Windows" />
+    <SkipNamespace name="KrakenUnlocker.Models" />
+    <SkipNamespace name="KrakenUnlocker" />
+
+    <!-- Critical security services MUST be obfuscated. Do not skip them. -->
+  </Module>
+</Obfuscator>

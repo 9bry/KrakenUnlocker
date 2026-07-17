@@ -1,0 +1,333 @@
+<Window
+    x:Class="KrakenUnlocker.Views.Windows.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:KrakenUnlocker.Views.Windows"
+    xmlns:pages="clr-namespace:KrakenUnlocker.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="clr-namespace:Wpf.Ui.Controls;assembly=Wpf.Ui"
+    mc:Ignorable="d"
+    Title="Kraken Xbox Unlocker"
+    Height="800"
+    Width="1200"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    AllowsTransparency="True"
+    ResizeMode="CanResize"
+    Background="Transparent">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="60" ResizeBorderThickness="5" 
+                     GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <!-- Font Family -->
+        <FontFamily x:Key="LastNinjaFont">pack://application:,,,/Fonts/#Last Ninja</FontFamily>
+        
+        <!-- Navigation Button Style -->
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                               BorderThickness="0" BorderBrush="Transparent"
+                               CornerRadius="4" Margin="2,0">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#CC0000"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#990000"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Main Container -->
+    <Border CornerRadius="8" BorderThickness="1" x:Name="MainBorder">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FF0000" Offset="0"/>
+                <GradientStop Color="#CC0000" Offset="0.5"/>
+                <GradientStop Color="#FF0000" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+        <Border.Effect>
+            <DropShadowEffect Color="#FF0000" BlurRadius="30" ShadowDepth="0" Opacity="0.5"/>
+        </Border.Effect>
+
+        <Grid>
+            <!-- Background with subtle animation -->
+            <Canvas x:Name="ParticleCanvas" ClipToBounds="True">
+                <Canvas.Background>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#000000" Offset="0"/>
+                        <GradientStop Color="#0A0000" Offset="0.7"/>
+                        <GradientStop Color="#000000" Offset="1"/>
+                    </RadialGradientBrush>
+                </Canvas.Background>
+            </Canvas>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top Header Bar -->
+                <Border Grid.Row="0" Background="#0D0D0D" BorderBrush="#CC0000" BorderThickness="0,0,0,1">
+                    <Grid Height="60">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Logo -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="16,-2,0,0" VerticalAlignment="Center">
+                            <Image Source="/Assets/xbox.ico" Height="18" Width="18" Margin="0,0,8,0"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="KRAKEN XBOX UNLOCKER" FontSize="11" FontWeight="Bold" VerticalAlignment="Center"
+                                       Margin="0,-2,0,0"
+                                       FontFamily="{StaticResource LastNinjaFont}">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#FF0033" BlurRadius="14" ShadowDepth="0" Opacity="0.8"/>
+                                </TextBlock.Effect>
+                                <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#FF0000" Offset="0"/>
+                                        <GradientStop Color="#FF3333" Offset="0.5"/>
+                                        <GradientStop Color="#CC0000" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Navigation Tabs -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Button x:Name="HomeButton" Click="NavigateToPage" Tag="HomePage" 
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="Home24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Home" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="GamesButton" Click="NavigateToPage" Tag="GamesPage"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="XboxController24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Games" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="AchievementsButton" Click="NavigateToPage" Tag="AchievementsPage"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="Trophy24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Achievements" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="Xbox360Button" Click="NavigateToPage" Tag="Xbox360Page"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="Wifi124" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Xbox 360" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="StatsButton" Click="NavigateToPage" Tag="StatsPage"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="DataBarVertical24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Stats" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="MiscButton" Click="NavigateToPage" Tag="MiscPage"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="Wrench24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Misc" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="QueueButton" Click="NavigateToPage" Tag="QueuePage"
+                                   Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <wpfui:SymbolIcon Symbol="TaskListAdd24" FontSize="13" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Queue" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Right Side Actions -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0" VerticalAlignment="Center"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Button Click="NavigateToSettings" Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Settings">
+                                <TextBlock Text="⚙" FontSize="16"/>
+                            </Button>
+                            <Button Click="NavigateToInfo" Style="{StaticResource NavButton}" Margin="2,0"
+                                   WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="About">
+                                <TextBlock Text="ℹ" FontSize="16"/>
+                            </Button>
+                            <Button Content="─" Width="40" Height="40" Click="MinimizeWindow"
+                                   Foreground="#AAAAAA" BorderThickness="0" 
+                                   Cursor="Hand" Margin="6,0,0,0" FontSize="16"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#CC0000"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#990000"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Content="□" Width="40" Height="40" Click="MaximizeWindow"
+                                   Foreground="#AAAAAA" BorderThickness="0" 
+                                   Cursor="Hand" FontSize="16"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#CC0000"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#990000"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Content="✕" Width="46" Height="46" Click="CloseWindow"
+                                   Foreground="#AAAAAA" BorderThickness="0" 
+                                   Cursor="Hand" FontSize="18" FontWeight="Bold"
+                                   WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="#AAAAAA"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bg" Background="{TemplateBinding Background}" CornerRadius="6">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="#CC0000"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="#990000"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Content Area -->
+                <Border Grid.Row="1" Background="Transparent">
+                    <Grid>
+                        <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden" Background="Transparent"/>
+
+                        <!-- Loading Overlay -->
+                        <Border x:Name="LoadingOverlay" Background="#DD000000" Visibility="Collapsed">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="⚡" FontSize="48" Foreground="#FF0000" HorizontalAlignment="Center"
+                                          RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform>
+                                        <RotateTransform/>
+                                    </TextBlock.RenderTransform>
+                                    <TextBlock.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                   From="0" To="360" Duration="0:0:1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </TextBlock.Triggers>
+                                </TextBlock>
+                                <TextBlock Text="Loading..." FontSize="16" Foreground="#FF0000" Margin="0,16,0,0"
+                                          FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Snackbar presenter - required for notifications to work -->
+                        <wpfui:SnackbarPresenter x:Name="RootSnackbarPresenter" Panel.ZIndex="10"/>
+
+                        <!-- Custom toast host -->
+                        <StackPanel x:Name="ToastHost"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,24,24"
+                                    Panel.ZIndex="20"
+                                    IsHitTestVisible="True"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

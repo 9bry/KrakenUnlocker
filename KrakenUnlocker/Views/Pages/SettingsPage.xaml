@@ -1,0 +1,231 @@
+<Page x:Class="KrakenUnlocker.Views.Pages.SettingsPage"
+      x:Name="SettingsPageRoot"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:KrakenUnlocker.Views.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="SettingsPage"
+      d:DataContext="{d:DesignInstance local:SettingsPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="700" d:DesignWidth="800"
+      Background="#0A0505"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="KrakenToggle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="outer" Width="52" Height="26" CornerRadius="4"
+                                Background="#1A1A1A" BorderBrush="#2A2A2A" BorderThickness="1" Cursor="Hand">
+                            <Grid>
+                                <Border x:Name="fill" Background="Transparent" CornerRadius="3"/>
+                                <Border x:Name="thumb" Width="20" Height="18" CornerRadius="3"
+                                        Background="#555" HorizontalAlignment="Left" Margin="3,0,0,0"
+                                        VerticalAlignment="Center">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform x:Name="thumbMove" X="0"/>
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="fill" Property="Background" Value="#CC0000"/>
+                                <Setter TargetName="outer" Property="BorderBrush" Value="#CC0000"/>
+                                <Setter TargetName="thumb" Property="Background" Value="White"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="thumbMove"
+                                                             Storyboard.TargetProperty="X"
+                                                             To="26" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="thumbMove"
+                                                             Storyboard.TargetProperty="X"
+                                                             To="0" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="outer" Property="BorderBrush" Value="#FF0033"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="outer" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Setting row style -->
+        <Style x:Key="SettingRow" TargetType="Border">
+            <Setter Property="Padding" Value="0,12,0,12"/>
+            <Setter Property="BorderBrush" Value="#1A1A1A"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,20,28,32" MaxWidth="920">
+
+            <TextBlock Style="{StaticResource KrakenSectionTitle}" Text="Settings"/>
+            <TextBlock Margin="0,6,0,22" Style="{StaticResource KrakenSectionSubtitle}"
+                       Text="Unlock behavior, Xbox app, and privacy settings."/>
+
+            <!-- TOKENS -->
+            <Border Style="{StaticResource KrakenSettingsCard}">
+                <StackPanel HorizontalAlignment="Left">
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="TOKENS" Margin="0,0,0,12"/>
+                    <TextBlock Style="{StaticResource KrakenSettingHint}"
+                               Text="Copy your current xauth or event token to the clipboard. Sign in first."/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <ui:Button Content="Copy xauth" Command="{Binding ViewModel.CopyXauthCommand}"/>
+                        <ui:Button Margin="10,0,0,0" Content="Copy Event Token"
+                                   Command="{Binding ViewModel.CopyEventTokenCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- UNLOCK BEHAVIOR -->
+            <Border Style="{StaticResource KrakenSettingsCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="UNLOCK BEHAVIOR" Margin="0,0,0,4"/>
+
+                    <Border Style="{StaticResource SettingRow}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Enable Unlock All"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Shows the Unlock All button on the Achievements page."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.UnlockAllEnabled, Mode=TwoWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderThickness="0" Padding="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Enable Auto Spoofer"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Automatically spoofs the title ID when opening achievements."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.AutoSpooferEnabled, Mode=TwoWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- XBOX APP -->
+            <Border Style="{StaticResource KrakenSettingsCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="XBOX APP" Margin="0,0,0,4"/>
+
+                    <Border Style="{StaticResource SettingRow}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Auto Launch Xbox App"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Start the Xbox app when Kraken launches."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.AutoLaunchXboxAppEnabled, Mode=TwoWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderThickness="0" Padding="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Launch Hidden"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Keep the Xbox app minimized on startup."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.LaunchHidden, Mode=TwoWay}"
+                                      IsEnabled="{Binding ViewModel.AutoLaunchXboxAppEnabled, Mode=OneWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- PRIVACY -->
+            <Border Style="{StaticResource KrakenSettingsCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource KrakenStatLabel}" Text="LOCALIZATION &amp; PRIVACY" Margin="0,0,0,4"/>
+
+                    <Border Style="{StaticResource SettingRow}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Privacy Mode"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Hide profile info on the home page."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.PrivacyMode, Mode=TwoWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderThickness="0" Padding="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Force English"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Uses en-GB when calling Xbox web APIs."/>
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource KrakenToggle}"
+                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                      IsChecked="{Binding ViewModel.RegionOverride, Mode=TwoWay}"
+                                      Command="{Binding ViewModel.SaveSettingsCommand}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

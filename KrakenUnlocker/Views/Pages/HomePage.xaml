@@ -1,0 +1,274 @@
+<Page
+    x:Class="KrakenUnlocker.Views.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:KrakenUnlocker.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="HomePage"
+    d:DataContext="{d:DesignInstance local:HomePage, IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    
+    
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="28,20,28,32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Profile hero -->
+            <Border Grid.Row="0" Style="{StaticResource KrakenCardBorder}" Margin="0,0,0,20">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1A0303" Offset="0"/>
+                        <GradientStop Color="#0D0D0D" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.Effect>
+                    <DropShadowEffect Color="#FF0033" BlurRadius="80" ShadowDepth="0" Opacity="0.3"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Profile pic with enhanced red glow ring -->
+                    <Grid Width="130" Height="130" VerticalAlignment="Center">
+                        <!-- Outer glow ring -->
+                        <Ellipse Width="130" Height="130" Fill="#FF0033">
+                            <Ellipse.Effect>
+                                <DropShadowEffect Color="#FF0033" BlurRadius="35" ShadowDepth="0" Opacity="0.4"/>
+                            </Ellipse.Effect>
+                        </Ellipse>
+                        <!-- Dark background fill blended to red -->
+                        <Ellipse Width="124" Height="124">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#0A0A0A" Offset="0.6"/>
+                                    <GradientStop Color="#160003" Offset="1.0"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <!-- Profile image clipped to circle -->
+                        <Ellipse Width="118" Height="118">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ViewModel.GamerPic, Mode=OneWay}"
+                                            Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <!-- Red border ring on top -->
+                        <Ellipse Width="124" Height="124" Stroke="#FF0033" StrokeThickness="3" Fill="Transparent">
+                            <Ellipse.Effect>
+                                <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+                            </Ellipse.Effect>
+                        </Ellipse>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Margin="28,0,20,0" VerticalAlignment="Center">
+                        <TextBlock FontSize="11" FontWeight="Black"
+                                   Foreground="#FF0033"
+                                   Text="LIVE PROFILE">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="#FF0033" BlurRadius="10" ShadowDepth="0" Opacity="0.8"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <TextBlock Margin="0,4,0,0" FontSize="32" FontWeight="Black"
+                                   Text="{Binding ViewModel.GamerTag, Mode=OneWay}">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="#FF0033" BlurRadius="12" ShadowDepth="0" Opacity="0.7"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock FontSize="11" FontWeight="Bold" Foreground="#555" 
+                                       Text="XUID  " VerticalAlignment="Center"/>
+                            <TextBlock FontSize="13" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding ViewModel.Xuid, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <TextBlock FontSize="11" FontWeight="Bold" Foreground="#555" 
+                                       Text="BIO  " VerticalAlignment="Top" Margin="0,2,0,0"/>
+                            <TextBlock FontSize="13" TextWrapping="Wrap" MaxWidth="480"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       Text="{Binding ViewModel.Bio, Mode=OneWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <ui:Button Style="{StaticResource KrakenPrimaryButton}"
+                                   Content="{Binding ViewModel.LoginText, Mode=OneWay}"
+                                   Command="{Binding ViewModel.LoginWithWamCommand, Mode=OneWay}"/>
+                        <ui:Button Margin="0,8,0,0" Appearance="Secondary"
+                                   Content="Refresh Profile"
+                                   Padding="18,8" FontSize="13"
+                                   IsEnabled="{Binding ViewModel.IsLoggedIn, Mode=OneWay}"
+                                   Command="{Binding ViewModel.RefreshProfileCommand, Mode=OneWay}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Stats grid -->
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
+                <Border Style="{StaticResource KrakenStatCard}" Margin="0,0,10,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="GAMERSCORE"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.GamerScore, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="5,0,5,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="REPUTATION"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.ProfileRep, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="10,0,0,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="ACCOUNT TIER"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.AccountTier, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="0,0,10,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="NOW PLAYING"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.CurrentlyPlaying, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="5,0,5,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="ACTIVE DEVICE"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.ActiveDevice, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="10,0,0,10">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="VERIFIED"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.IsVerified, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="0,0,10,0">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="LOCATION"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.Location, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="5,0,5,0">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="TENURE"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.Tenure, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource KrakenStatCard}" Margin="10,0,0,0">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenStatLabel}" Text="GAME PASS"/>
+                        <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.Gamepass, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Social + badges -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource KrakenCardBorder}" Margin="0,0,10,0" BorderBrush="#3A0808">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#120202" Offset="0"/>
+                            <GradientStop Color="#0D0000" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="40" ShadowDepth="0" Opacity="0.15"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenSectionTitle}" Text="Network"/>
+                        <TextBlock Margin="0,6,0,16" Style="{StaticResource KrakenSectionSubtitle}"
+                                   Text="Followers and following on Xbox Live."/>
+                        <Border Style="{StaticResource KrakenStatCard}" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource KrakenStatLabel}" Text="FOLLOWERS"/>
+                                <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.Followers, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource KrakenStatCard}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource KrakenStatLabel}" Text="FOLLOWING"/>
+                                <TextBlock Style="{StaticResource KrakenStatValue}" Text="{Binding ViewModel.Following, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource KrakenCardBorder}" Margin="10,0,0,0" BorderBrush="#3A0808">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#120202" Offset="0"/>
+                            <GradientStop Color="#0D0000" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect Color="#FF0033" BlurRadius="40" ShadowDepth="0" Opacity="0.15"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource KrakenSectionTitle}" Text="Badges"/>
+                        <TextBlock Margin="0,6,0,16" Style="{StaticResource KrakenSectionSubtitle}"
+                                   Text="Profile watermarks and flair."/>
+                        <ItemsControl ItemsSource="{Binding ViewModel.Watermarks}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,10,10" CornerRadius="8"
+                                            BorderBrush="#3A1010" BorderThickness="1" Background="#121212">
+                                        <Image Source="{Binding ImageUrl}" Width="96" Height="96" Stretch="Uniform"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>
