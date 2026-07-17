@@ -69,12 +69,9 @@ jobs:
       run: dotnet restore KrakenUnlocker/KrakenUnlocker.csproj /p:EnableWindowsTargeting=true
 
     - name: Build
-      # Use --self-contained true so the publish output contains the BCL.
-      # This matches build_release.ps1 (also --self-contained true) and means
-      # Obfuscar can resolve every type from InPath="." with no absolute
-      # pack paths that would otherwise drift with every SDK patch upgrade.
-      # Trade-off: ~80MB → ~150MB exe; acceptable for a single-file download.
-      run: dotnet publish KrakenUnlocker/KrakenUnlocker.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:IncludeAllContentForSelfExtract=true /p:EnableWindowsTargeting=true /p:DebugType=none /p:DebugSymbols=false -o ./publish
+      # Use --self-contained false to reduce binary size from ~191MB down to ~80MB
+      # since Obfuscar is currently skipped.
+      run: dotnet publish KrakenUnlocker/KrakenUnlocker.csproj -c Release -r win-x64 --self-contained false /p:PublishSingleFile=true /p:PublishReadyToRun=false /p:IncludeAllContentForSelfExtract=true /p:EnableWindowsTargeting=true /p:DebugType=none /p:DebugSymbols=false -o ./publish
 
     - name: Copy .exe file to workspace
       run: |
