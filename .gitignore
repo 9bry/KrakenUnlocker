@@ -367,3 +367,17 @@ KrakenUnlocker/Secrets.cs
 .tmp/
 publish_fixed/
 publish_test/
+
+# Sensitive source — keep private
+*.snk
+KrakenUnlocker/Services/ProtectionService.cs
+KrakenUnlocker/Services/SecurityService.cs
+KrakenUnlocker/Services/IntegrityService.cs
+KrakenUnlocker/Services/LicenseService.cs
+KrakenUnlocker/Services/WamAuthService.cs
+KrakenUnlocker/Networking/XboxRestApi.cs
+build_protected.ps1
+KrakenUnlocker/obfuscar.xml
+tools/
+supabase/
+release/
