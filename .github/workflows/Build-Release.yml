@@ -61,6 +61,7 @@ jobs:
         Set-Content -Path $homePath -Value $content
 
     - name: Skip Obfuscar (package not available in NuGet)
+      run: echo "Skipped"
       # Obfuscar.console is not available in NuGet feeds currently
       # Building without obfuscation for now
 
