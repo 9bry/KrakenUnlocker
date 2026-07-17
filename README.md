@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="KrakenUnlocker/Assets/kraken.png" alt="Kraken Logo" width="120"/>
+<img src="kraken.png" alt="Kraken Logo" width="120"/>
 
 # Kraken Unlocker
 
