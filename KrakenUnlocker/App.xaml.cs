@@ -45,6 +45,8 @@ public partial class App
             services.AddSingleton<StatsViewModel>();
             services.AddSingleton<MiscPage>();
             services.AddSingleton<MiscViewModel>();
+            services.AddSingleton<SpooferPage>();
+            services.AddSingleton<SpooferViewModel>();
             services.AddSingleton<InfoPage>();
             services.AddSingleton<InfoViewModel>();
             services.AddSingleton<LicenseViewModel>();

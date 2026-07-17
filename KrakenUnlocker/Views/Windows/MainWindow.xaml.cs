@@ -68,6 +68,7 @@ public partial class MainWindow
             "Xbox360Page" => App.GetService<Xbox360Page>(),
             "StatsPage" => App.GetService<StatsPage>(),
             "MiscPage" => App.GetService<MiscPage>(),
+            "SpooferPage" => App.GetService<SpooferPage>(),
             "QueuePage" => App.GetService<QueuePage>(),
             _ => App.GetService<HomePage>()
         };
@@ -83,6 +84,7 @@ public partial class MainWindow
                 "HomePage" => App.GetService<HomeViewModel>()?.OnNavigatedToAsync(),
                 "StatsPage" => App.GetService<StatsViewModel>()?.OnNavigatedToAsync(),
                 "MiscPage" => App.GetService<MiscViewModel>()?.OnNavigatedToAsync(),
+                "SpooferPage" => App.GetService<SpooferViewModel>()?.OnNavigatedToAsync(),
                 "QueuePage" => App.GetService<QueueViewModel>()?.OnNavigatedToAsync(),
                 _ => Task.CompletedTask
             };

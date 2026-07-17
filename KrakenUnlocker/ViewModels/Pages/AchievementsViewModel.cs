@@ -1459,6 +1459,9 @@ namespace KrakenUnlocker.ViewModels.Pages
             if (IsEventBased && EventsToken == null)
                 return;
 
+            if (!KrakenUnlocker.Services.LicenseService.IsPremium)
+                return;
+
             _resumePrompted.Add(TitleIDOverride);
 
             var answer = await _contentDialogService.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
