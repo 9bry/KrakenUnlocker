@@ -9,4 +9,5 @@ public class XAUSettings
     public bool RegionOverride { get; set; }
     public bool UseAcrylic { get; set; }
     public bool PrivacyMode { get; set; }
+    public string TimeFormat { get; set; } = "MM:SS";
 }

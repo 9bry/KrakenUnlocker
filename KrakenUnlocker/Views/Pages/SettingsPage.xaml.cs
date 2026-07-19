@@ -15,5 +15,10 @@ namespace KrakenUnlocker.Views.Pages
             DataContext = this;
             InitializeComponent();
         }
+
+        private void TimeFormat_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ViewModel.SaveSettings();
+        }
     }
 }

@@ -121,6 +121,9 @@ namespace KrakenUnlocker.Services.StatEditor
             if (string.IsNullOrWhiteSpace(scid))
                 return (false, "Cannot write a stat without a SCID.");
 
+            if (!await Services.SecurityService.ValidatePremiumOpAsync("stat-edit", titleId))
+                return (false, "Premium validation failed. Please check your license.");
+
             var url = $"https://statswrite.xboxlive.com/stats/users/{_xuid}/scids/{scid}";
             Exception? lastError = null;
 

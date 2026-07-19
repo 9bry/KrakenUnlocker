@@ -515,6 +515,15 @@ namespace KrakenUnlocker.ViewModels.Pages
                             $"{noDataCount} achievement(s) are not supported and may not unlock. They're marked \"Not Supported\".",
                             ControlAppearance.Caution, new SymbolIcon(SymbolRegular.Warning24), _snackbarDuration);
                 }
+                else
+                {
+                    // Event-based game but NOT in supported list — mark all as Not Supported
+                    foreach (var achievement in DGAchievements)
+                    {
+                        if (achievement.ProgressState != StringConstants.Achieved)
+                            achievement.Category = "Not Supported";
+                    }
+                }
                 CollectionViewSource.GetDefaultView(DGAchievements).Refresh();
             }
 
@@ -1287,50 +1296,58 @@ namespace KrakenUnlocker.ViewModels.Pages
                 return;
             }
 
-            // ── Toggle: Seconds ↔ Minutes ────────────────────────────────────
-            bool showMinutes = false;
-
-            var togglePanel = new System.Windows.Controls.StackPanel
-            {
-                Orientation = System.Windows.Controls.Orientation.Horizontal,
-                Margin = new Thickness(0, 0, 0, 10)
-            };
-            var secLabel = new System.Windows.Controls.TextBlock
+            // ── Column headers ─────────────────────────────────────────────
+            var redBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 200, 50, 50));
+            var headerRow = new System.Windows.Controls.Grid { Margin = new Thickness(0, 0, 0, 4) };
+            headerRow.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star) });
+            headerRow.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(80) });
+            headerRow.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(85) });
+            var emptyHeader = new System.Windows.Controls.TextBlock();
+            System.Windows.Controls.Grid.SetColumn(emptyHeader, 0);
+            var secHeader = new System.Windows.Controls.TextBlock
             {
                 Text = "Seconds",
-                Foreground = System.Windows.Media.Brushes.White,
-                VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 6, 0),
-                FontWeight = System.Windows.FontWeights.Bold
+                Foreground = redBrush,
+                FontWeight = System.Windows.FontWeights.Bold,
+                TextAlignment = System.Windows.TextAlignment.Right,
+                Margin = new Thickness(0, 0, 4, 0)
             };
-            var toggle = new System.Windows.Controls.CheckBox
+            System.Windows.Controls.Grid.SetColumn(secHeader, 1);
+            var minHeader = new System.Windows.Controls.TextBlock
             {
-                Content = "Show as mm:ss",
-                VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                Margin = new Thickness(8, 0, 0, 0),
-                Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 150, 150, 150))
+                Text = "Minutes",
+                Foreground = redBrush,
+                FontWeight = System.Windows.FontWeights.Bold,
+                TextAlignment = System.Windows.TextAlignment.Right,
+                Margin = new Thickness(0, 0, 0, 0)
             };
-            togglePanel.Children.Add(secLabel);
-            togglePanel.Children.Add(toggle);
+            System.Windows.Controls.Grid.SetColumn(minHeader, 2);
+            headerRow.Children.Add(emptyHeader);
+            headerRow.Children.Add(secHeader);
+            headerRow.Children.Add(minHeader);
 
+            // ── Time until next column ──────────────────────────────────────
             var hint = new System.Windows.Controls.TextBlock
             {
-                Text = "Delay before each achievement unlocks. First is usually 0. Editing one field syncs the other.",
+                Text = "Delay before each achievement unlocks. First is usually 0. Editing seconds or minutes syncs both.",
                 TextWrapping = TextWrapping.Wrap,
                 Opacity = 0.6,
                 FontSize = 11,
                 Margin = new Thickness(0, 0, 0, 10)
             };
 
-            var rows = new List<(System.Windows.Controls.TextBox secBox, System.Windows.Controls.TextBox minBox, UnlockOrderItem item)>();
+            var rows = new List<(System.Windows.Controls.TextBox secBox, System.Windows.Controls.TextBox nextBox, int index, UnlockOrderItem item)>();
             var list = new System.Windows.Controls.StackPanel();
 
-            foreach (var item in order.Items)
+            for (int idx = 0; idx < order.Items.Count; idx++)
             {
+                var item = order.Items[idx];
+                bool isLast = idx == order.Items.Count - 1;
+
                 var row = new System.Windows.Controls.Grid { Margin = new Thickness(0, 3, 0, 3) };
                 row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star) });
                 row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(80) });
-                row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(80) });
+                row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new System.Windows.GridLength(85) });
 
                 var label = new System.Windows.Controls.TextBlock
                 {
@@ -1341,7 +1358,6 @@ namespace KrakenUnlocker.ViewModels.Pages
                 };
                 System.Windows.Controls.Grid.SetColumn(label, 0);
 
-                // Seconds box
                 var secBox = new System.Windows.Controls.TextBox
                 {
                     Text = item.DelaySeconds.ToString(),
@@ -1352,64 +1368,67 @@ namespace KrakenUnlocker.ViewModels.Pages
                 };
                 System.Windows.Controls.Grid.SetColumn(secBox, 1);
 
-                // Minutes box (mm:ss format)
-                long ms = item.DelaySeconds;
-                var minBox = new System.Windows.Controls.TextBox
+                var nextSecs = item.DelaySeconds;
+                var nextBox = new System.Windows.Controls.TextBox
                 {
-                    Text = $"{ms / 60:D2}:{ms % 60:D2}",
+                    Text = FormatHHMMSS(nextSecs),
                     TextAlignment = System.Windows.TextAlignment.Right,
                     VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                    Visibility = System.Windows.Visibility.Collapsed,
                     Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 170, 170, 170)),
-                    ToolTip = "mm:ss"
+                    ToolTip = "Time until next achievement (hh:mm:ss)"
                 };
-                System.Windows.Controls.Grid.SetColumn(minBox, 2);
-
-                // Sync seconds → mm:ss
-                secBox.TextChanged += (_, _) =>
-                {
-                    if (long.TryParse(secBox.Text?.Trim(), out var s) && s >= 0)
-                        minBox.Text = $"{s / 60:D2}:{s % 60:D2}";
-                };
-
-                // Sync mm:ss → seconds
-                minBox.TextChanged += (_, _) =>
-                {
-                    var parts = minBox.Text?.Trim().Split(':');
-                    if (parts?.Length == 2 && long.TryParse(parts[0], out var m) && long.TryParse(parts[1], out var sc))
-                        secBox.Text = (m * 60 + sc).ToString();
-                };
+                System.Windows.Controls.Grid.SetColumn(nextBox, 2);
 
                 row.Children.Add(label);
                 row.Children.Add(secBox);
-                row.Children.Add(minBox);
+                row.Children.Add(nextBox);
                 list.Children.Add(row);
-                rows.Add((secBox, minBox, item));
+                rows.Add((secBox, nextBox, idx, item));
             }
 
-            // Toggle handler
-            toggle.Checked += (_, _) =>
+            // Two-way sync — each row shows its own delay in both formats
+            foreach (var (secBox, nextBox, idx, item) in rows)
             {
-                showMinutes = true;
-                secLabel.Text = "Seconds → mm:ss";
-                foreach (var (sb, mb, _) in rows)
+                bool syncing = false;
+
+                // secBox changed → update this row's nextBox (same delay, different format)
+                secBox.TextChanged += (_, _) =>
                 {
-                    sb.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(150, 200, 200, 200));
-                    sb.IsReadOnly = true;
-                    mb.Visibility = System.Windows.Visibility.Visible;
-                }
-            };
-            toggle.Unchecked += (_, _) =>
-            {
-                showMinutes = false;
-                secLabel.Text = "Seconds";
-                foreach (var (sb, mb, _) in rows)
+                    if (syncing) return;
+                    syncing = true;
+                    try
+                    {
+                        if (long.TryParse(secBox.Text?.Trim(), out var s) && s >= 0)
+                        {
+                            item.DelaySeconds = s;
+                            nextBox.Text = FormatHHMMSS(s);
+                        }
+                    }
+                    finally { syncing = false; }
+                };
+
+                // nextBox changed → parse hh:mm:ss, update this row's secBox
+                nextBox.TextChanged += (_, _) =>
                 {
-                    sb.Foreground = System.Windows.Media.Brushes.White;
-                    sb.IsReadOnly = false;
-                    mb.Visibility = System.Windows.Visibility.Collapsed;
-                }
-            };
+                    if (syncing) return;
+                    syncing = true;
+                    try
+                    {
+                        var cleaned = nextBox.Text?.Trim();
+                        var parts = cleaned?.Split(':');
+                        if (parts?.Length == 3
+                            && int.TryParse(parts[0], out var h)
+                            && int.TryParse(parts[1], out var m)
+                            && int.TryParse(parts[2], out var s))
+                        {
+                            long total = h * 3600 + m * 60 + s;
+                            item.DelaySeconds = total;
+                            secBox.Text = total.ToString();
+                        }
+                    }
+                    finally { syncing = false; }
+                };
+            }
 
             var scroll = new System.Windows.Controls.ScrollViewer
             {
@@ -1418,8 +1437,8 @@ namespace KrakenUnlocker.ViewModels.Pages
                 VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto
             };
             var panel = new System.Windows.Controls.StackPanel { MinWidth = 460 };
-            panel.Children.Add(togglePanel);
             panel.Children.Add(hint);
+            panel.Children.Add(headerRow);
             panel.Children.Add(scroll);
 
             var result = await _contentDialogService.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
@@ -1432,9 +1451,8 @@ namespace KrakenUnlocker.ViewModels.Pages
 
             if (result == ContentDialogResult.Primary)
             {
-                foreach (var (secBox, minBox, item) in rows)
+                foreach (var (secBox, nextBox, idx, item) in rows)
                 {
-                    // Always read from seconds box (it's always in sync)
                     if (long.TryParse(secBox.Text?.Trim(), out var seconds) && seconds >= 0)
                         item.DelaySeconds = seconds;
                 }
@@ -1855,13 +1873,31 @@ namespace KrakenUnlocker.ViewModels.Pages
             });
         }
 
-        // Formata segundos em HH:MM:SS (ou MM:SS quando não chega a uma hora).
-        private static string FormatTime(long seconds)
+        // Formata segundos em HH:MM:SS (sempre com horas).
+        private static string FormatHHMMSS(long seconds)
         {
             var h = seconds / 3600;
             var m = (seconds % 3600) / 60;
             var s = seconds % 60;
-            return h > 0 ? $"{h:00}:{m:00}:{s:00}" : $"{m:00}:{s:00}";
+            return $"{h:D2}:{m:D2}:{s:D2}";
+        }
+
+        // Formata segundos conforme a preferência do usuário.
+        private string FormatTime(long seconds)
+        {
+            var fmt = HomeViewModel.Settings.TimeFormat ?? "MM:SS";
+            var h = seconds / 3600;
+            var m = (seconds % 3600) / 60;
+            var s = seconds % 60;
+
+            return fmt switch
+            {
+                "HH:MM:SS" => $"{h:00}:{m:00}:{s:00}",
+                "12h" => h > 0
+                    ? $"{h}h {m:D2}m"
+                    : $"{m}m {s:D2}s",
+                _ => h > 0 ? $"{h:00}:{m:00}:{s:00}" : $"{m:00}:{s:00}",  // MM:SS default
+            };
         }
 
         #endregion

@@ -62,22 +62,25 @@ public partial class App
     private async void OnStartup(object sender, StartupEventArgs e)
     {
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
-        await Host.StartAsync();
         SetupExceptionHandling();
 
-        // ── Anti-Debugger Check ───────────────────────────────────────────────
-        if (System.Diagnostics.Debugger.IsAttached)
+        // ── Protection checks FIRST — before anything loads ─────────────────────
+        if (!ProtectionService.RunAllChecks())
         {
             System.Windows.Application.Current.Shutdown();
             return;
         }
 
+        await Host.StartAsync();
+
+        // ── Try restore previous session from stored token ────────────────────
+        try { LicenseService.TryRestoreSession(); } catch { }
+
+        // ── Update check FIRST — shows proper popup before integrity blocks ────
+        await CheckForUpdateAsync();
+
         // ── Integrity check ───────────────────────────────────────────────────
         await CheckIntegrityAsync();
-
-        // ── Update check ──────────────────────────────────────────────────────
-        await CheckForUpdateAsync();
 
         ShutdownMode = ShutdownMode.OnLastWindowClose;
     }

@@ -21,7 +21,8 @@ namespace KrakenUnlocker.Views.Windows
                 ? "No changelog provided."
                 : release.Body.Trim();
 
-            _downloadUrl = release.Assets?.FirstOrDefault(a => a.BrowserDownloadUrl?.EndsWith(".exe") == true)?.BrowserDownloadUrl
+            _downloadUrl = release.Assets?.FirstOrDefault(a => a.BrowserDownloadUrl?.EndsWith(".zip") == true)?.BrowserDownloadUrl
+                           ?? release.Assets?.FirstOrDefault(a => a.BrowserDownloadUrl?.EndsWith(".exe") == true)?.BrowserDownloadUrl
                            ?? release.HtmlUrl
                            ?? $"https://github.com/9bry/KrakenUnlocker/releases/latest";
 

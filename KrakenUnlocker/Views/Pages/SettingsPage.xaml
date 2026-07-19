@@ -213,6 +213,29 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Time Format"/>
+                                <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
+                                           Text="Choose how delay times are displayed."/>
+                            </StackPanel>
+                            <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="16,0,0,0"
+                                      MinWidth="120"
+                                      SelectedValue="{Binding ViewModel.TimeFormat, Mode=TwoWay}"
+                                      SelectedValuePath="Tag"
+                                      SelectionChanged="TimeFormat_Changed">
+                                <ComboBoxItem Tag="MM:SS" Content="MM:SS"/>
+                                <ComboBoxItem Tag="HH:MM:SS" Content="HH:MM:SS"/>
+                                <ComboBoxItem Tag="12h" Content="12h"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderThickness="0" Padding="0,12,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
                                 <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White" Text="Force English"/>
                                 <TextBlock FontSize="11" Foreground="#666" Margin="0,2,0,0"
                                            Text="Uses en-GB when calling Xbox web APIs."/>

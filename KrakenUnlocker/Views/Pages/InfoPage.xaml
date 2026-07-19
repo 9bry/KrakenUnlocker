@@ -110,7 +110,7 @@
                                 Background="#1A0505" BorderBrush="#CC0000" BorderThickness="1"
                                 CornerRadius="8" Padding="16,8">
                             <StackPanel HorizontalAlignment="Center">
-                                <TextBlock Text="v1.0" FontSize="22" FontWeight="Black"
+                                <TextBlock Text="v1.2" FontSize="22" FontWeight="Black"
                                            Foreground="#FF0033" HorizontalAlignment="Center"/>
                                 <TextBlock Text="STABLE" FontSize="9" FontWeight="Bold"
                                            Foreground="#666" HorizontalAlignment="Center"/>

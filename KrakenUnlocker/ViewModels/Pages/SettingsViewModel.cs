@@ -36,6 +36,7 @@ namespace KrakenUnlocker.ViewModels.Pages
         [ObservableProperty] private bool _regionOverride;
         [ObservableProperty] private bool _useAcrylic;
         [ObservableProperty] private bool _privacyMode;
+        [ObservableProperty] private string _timeFormat = "MM:SS";
 
         [ObservableProperty] private bool _serverEnabled;
         [ObservableProperty] private string _serverPort = "1337";
@@ -57,7 +58,8 @@ namespace KrakenUnlocker.ViewModels.Pages
                 LaunchHidden = LaunchHidden,
                 RegionOverride = RegionOverride,
                 UseAcrylic = UseAcrylic,
-                PrivacyMode = PrivacyMode
+                PrivacyMode = PrivacyMode,
+                TimeFormat = TimeFormat
             };
             string settingsJson = JsonConvert.SerializeObject(settings);
             File.WriteAllText(SettingsFilePath, settingsJson);
@@ -238,6 +240,7 @@ namespace KrakenUnlocker.ViewModels.Pages
             RegionOverride = HomeViewModel.Settings.RegionOverride;
             UseAcrylic = HomeViewModel.Settings.UseAcrylic;
             PrivacyMode = HomeViewModel.Settings.PrivacyMode;
+            TimeFormat = HomeViewModel.Settings.TimeFormat ?? "MM:SS";
         }
 
         private string GetAssemblyVersion()

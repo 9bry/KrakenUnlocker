@@ -362,7 +362,8 @@ namespace KrakenUnlocker.ViewModels.Pages
                     AutoLaunchXboxAppEnabled = false,
                     RegionOverride = false,
                     UseAcrylic = false,
-                    PrivacyMode = false
+                    PrivacyMode = false,
+                    TimeFormat = "MM:SS"
                 };
                 string defaultSettingsJson = JsonConvert.SerializeObject(defaultSettings, Formatting.Indented);
                 using (var file = new StreamWriter(SettingsFilePath))
@@ -792,6 +793,7 @@ namespace KrakenUnlocker.ViewModels.Pages
             Settings.RegionOverride = settings.RegionOverride;
             Settings.UseAcrylic = settings.UseAcrylic;
             Settings.PrivacyMode = settings.PrivacyMode;
+            Settings.TimeFormat = settings.TimeFormat ?? "MM:SS";
         }
 
         #endregion
