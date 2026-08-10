@@ -151,15 +151,15 @@
       margin-bottom: 28px;
       filter: drop-shadow(0 0 32px rgba(204,0,0,0.4));
       animation: breathe 5s ease-in-out infinite;
-      will-change: transform, filter;
+      will-change: transform;
     }
 
     @keyframes breathe {
-      0%, 100% { transform: scale(1.0); filter: drop-shadow(0 0 32px rgba(204,0,0,0.4)); }
-      25% { transform: scale(1.06); filter: drop-shadow(0 0 44px rgba(204,0,0,0.6)); }
-      50% { transform: scale(1.03); filter: drop-shadow(0 0 38px rgba(204,0,0,0.5)); }
-      75% { transform: scale(1.08); filter: drop-shadow(0 0 52px rgba(204,0,0,0.7)); }
-      90% { transform: scale(1.04); filter: drop-shadow(0 0 40px rgba(204,0,0,0.55)); }
+      0%, 100% { transform: scale(1.0); }
+      25% { transform: scale(1.06); }
+      50% { transform: scale(1.03); }
+      75% { transform: scale(1.08); }
+      90% { transform: scale(1.04); }
     }
 
     .hero h1 {

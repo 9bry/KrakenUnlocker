@@ -150,12 +150,16 @@
       object-fit: contain;
       margin-bottom: 28px;
       filter: drop-shadow(0 0 32px rgba(204,0,0,0.4));
-      animation: breathe 3s ease-in-out infinite;
+      animation: breathe 5s ease-in-out infinite;
+      will-change: transform;
     }
 
     @keyframes breathe {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 32px rgba(204,0,0,0.4)); }
-      50% { transform: scale(1.08); filter: drop-shadow(0 0 50px rgba(204,0,0,0.7)); }
+      0%, 100% { transform: scale(1.0); }
+      25% { transform: scale(1.06); }
+      50% { transform: scale(1.03); }
+      75% { transform: scale(1.08); }
+      90% { transform: scale(1.04); }
     }
 
     .hero h1 {
