@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kraken Xbox Unlocker</title>
-  <meta name="description" content="A clean, modern Xbox achievement unlocker for Windows. Free and premium features, auto unlock, game queue and more."/>
+  <meta name="description" content="A premium, lightning-fast Xbox achievement tool for Windows. Effortlessly manage and unlock your achievements."/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -150,6 +150,12 @@
       object-fit: contain;
       margin-bottom: 28px;
       filter: drop-shadow(0 0 32px rgba(204,0,0,0.4));
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 32px rgba(204,0,0,0.4)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 50px rgba(204,0,0,0.7)); }
     }
 
     .hero h1 {
